@@ -2,6 +2,7 @@
 
 a slow and badly designed interpreter language.
 
-The interpreter is written in the much better language golang. This is my
-learning of how a interpreter works and it is all based on the following book
-"Writing an interpreter in go" from Thorsten Ball.
+Its only purpose is to teach myself more about programming languages and why
+different languages have their own weaknesses. All the work is based on Thorsten
+Ball's Book "Writing an interpreter in go"
+([interpreterbook.com](https://interpreterbook.com/)).
