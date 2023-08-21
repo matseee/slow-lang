@@ -4,7 +4,7 @@ name: build
 
 steps:
   - name: test
-    image: matseee/golang-node:go1.21.0-node-18.17.1-alpine3.18
+    image: matseee/golang-node:go1.21.0-node18.17.1-alpine3.18
     commands:
       - cd src/
       - go test ./...
