@@ -1,4 +1,4 @@
-# slow-lang
+# slow-lang [![Build Status](https://ci.matse.dev/api/badges/matse/slow-lang/status.svg)](https://ci.matse.dev/matse/slow-lang)
 
 a slow and badly designed interpreter language.
 
