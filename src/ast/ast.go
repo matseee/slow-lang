@@ -1,13 +1,10 @@
-package ast
-
-// Abstract Syntax Tree
+package ast // abstract syntax tree
 
 import (
 	"bytes"
 	"slow-lang/token"
 )
 
-// let <identifier> = <expression>
 type Node interface {
 	TokenLiteral() string
 	String() string
@@ -23,7 +20,7 @@ type Expression interface {
 	expressionNode()
 }
 
-// Program implementation - root node
+// root node
 type Program struct {
 	Statements []Statement
 }
@@ -35,7 +32,6 @@ func (p *Program) TokenLiteral() string {
 		return ""
 	}
 }
-
 func (p *Program) String() string {
 	var out bytes.Buffer
 
@@ -46,17 +42,7 @@ func (p *Program) String() string {
 	return out.String()
 }
 
-// Identifier implementation
-type Identifier struct {
-	Token token.Token // the token.IDENT token
-	Value string
-}
-
-func (i *Identifier) expressionNode()      {}
-func (i *Identifier) TokenLiteral() string { return i.Token.Literal }
-func (i *Identifier) String() string       { return i.Value }
-
-// Let statement implementation
+// let <identifier> = <expression>
 type LetStatement struct {
 	Token token.Token // the token.LET token
 	Name  *Identifier
@@ -79,9 +65,9 @@ func (ls *LetStatement) String() string {
 	return out.String()
 }
 
-// Return statement implementation
+// return <expression>
 type ReturnStatement struct {
-	Token       token.Token // the token.RETURN token
+	Token       token.Token // token.RETURN
 	ReturnValue Expression
 }
 
@@ -112,4 +98,40 @@ func (es *ExpressionStatement) String() string {
 		return es.Expression.String()
 	}
 	return ""
+}
+
+// <identifier>
+type Identifier struct {
+	Token token.Token // token.IDENT
+	Value string
+}
+
+func (i *Identifier) expressionNode()      {}
+func (i *Identifier) TokenLiteral() string { return i.Token.Literal }
+func (i *Identifier) String() string       { return i.Value }
+
+// <integer>
+type IntegerLiteral struct {
+	Token token.Token // token.INTEGER
+	Value int64
+}
+
+func (il *IntegerLiteral) expressionNode()      {}
+func (il *IntegerLiteral) TokenLiteral() string { return il.Token.Literal }
+func (il *IntegerLiteral) String() string       { return il.Token.Literal }
+
+// <prefix operator><expression>
+type PrefixExpression struct {
+	Token    token.Token // e.g. token.BANG or token.MINUS
+	Operator string
+	Right    Expression
+}
+
+func (pe *PrefixExpression) expressionNode()      {}
+func (pe *PrefixExpression) TokenLiteral() string { return pe.Token.Literal }
+func (pe *PrefixExpression) String() string {
+	var out bytes.Buffer
+	out.WriteString("(" + pe.Operator)
+	out.WriteString(pe.Right.String() + ")")
+	return out.String()
 }
