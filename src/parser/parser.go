@@ -20,6 +20,17 @@ const (
 	CALL        // myFunction(x)
 )
 
+var precedences = map[token.TokenType]int{
+	token.EQ:       EQUALS,
+	token.NEQ:      EQUALS,
+	token.LT:       LESSGREATER,
+	token.GT:       LESSGREATER,
+	token.PLUS:     SUM,
+	token.MINUS:    SUM,
+	token.SLASH:    PRODUCT,
+	token.ASTERISK: PRODUCT,
+}
+
 type (
 	prefixParseFn func() ast.Expression
 	infixParseFn  func(ast.Expression) ast.Expression
@@ -51,6 +62,15 @@ func New(l *lexer.Lexer) *Parser {
 
 	p.registerPrefixFn(token.BANG, p.parsePrefixExpression)
 	p.registerPrefixFn(token.MINUS, p.parsePrefixExpression)
+
+	p.registerInfixFn(token.PLUS, p.parseInfixExpression)
+	p.registerInfixFn(token.MINUS, p.parseInfixExpression)
+	p.registerInfixFn(token.SLASH, p.parseInfixExpression)
+	p.registerInfixFn(token.ASTERISK, p.parseInfixExpression)
+	p.registerInfixFn(token.EQ, p.parseInfixExpression)
+	p.registerInfixFn(token.NEQ, p.parseInfixExpression)
+	p.registerInfixFn(token.LT, p.parseInfixExpression)
+	p.registerInfixFn(token.GT, p.parseInfixExpression)
 
 	// Read two tokens, so that
 	p.nextToken() // currToken has a value
@@ -132,14 +152,23 @@ func (p *Parser) parseExpressionStatement() *ast.ExpressionStatement {
 }
 
 func (p *Parser) parseExpression(precendence int) ast.Expression {
-	prefix := p.prefixParseFns[p.currToken.Type]
-
-	if prefix == nil {
+	prefixFn := p.prefixParseFns[p.currToken.Type]
+	if prefixFn == nil {
 		p.noPrefixParseFnError(p.currToken.Type)
 		return nil
 	}
 
-	leftExp := prefix()
+	leftExp := prefixFn()
+
+	for !p.peekTokenIs(token.SEMICOLON) && precendence < p.peekPrecedence() {
+		infixFn := p.infixParseFns[p.peekToken.Type]
+		if infixFn == nil {
+			return leftExp
+		}
+
+		p.nextToken()
+		leftExp = infixFn(leftExp)
+	}
 	return leftExp
 }
 
@@ -152,7 +181,7 @@ func (p *Parser) parseIntegerLiteral() ast.Expression {
 
 	value, err := strconv.ParseInt(p.currToken.Literal, 0, 64)
 	if err != nil {
-		msg := fmt.Sprintf("could not parse %q as integer", p.currToken.Literal)
+		msg := fmt.Sprintf("brrrr. could not parse %q as integer...", p.currToken.Literal)
 		p.errors = append(p.errors, msg)
 		return nil
 	}
@@ -171,6 +200,35 @@ func (p *Parser) parsePrefixExpression() ast.Expression {
 	expression.Right = p.parseExpression(PREFIX)
 
 	return expression
+}
+
+func (p *Parser) parseInfixExpression(left ast.Expression) ast.Expression {
+	expression := &ast.InfixExpression{
+		Token:    p.currToken,
+		Operator: p.currToken.Literal,
+		Left:     left,
+	}
+
+	precedence := p.currPrecedence()
+	p.nextToken()
+	expression.Right = p.parseExpression(precedence)
+
+	return expression
+}
+
+// PRECEDENCE-HELPER-FUNCTIONS
+func (p *Parser) peekPrecedence() int {
+	if p, ok := precedences[p.peekToken.Type]; ok {
+		return p
+	}
+	return LOWEST
+}
+
+func (p *Parser) currPrecedence() int {
+	if p, ok := precedences[p.currToken.Type]; ok {
+		return p
+	}
+	return LOWEST
 }
 
 // TOKEN-HELPER-FUNCTIONS
