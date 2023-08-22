@@ -1,4 +1,4 @@
-package repl
+package repl // read-eval-print loop
 
 import (
 	"bufio"
