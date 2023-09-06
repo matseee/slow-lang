@@ -20,7 +20,7 @@ const (
 	CALL        // myFunction(x)
 )
 
-var showTrace bool = true
+var showTrace bool = false
 
 var precedences = map[token.TokenType]int{
 	token.EQ:       EQUALS,
