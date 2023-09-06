@@ -20,6 +20,8 @@ const (
 	CALL        // myFunction(x)
 )
 
+var showTrace bool = true
+
 var precedences = map[token.TokenType]int{
 	token.EQ:       EQUALS,
 	token.NEQ:      EQUALS,
@@ -59,7 +61,8 @@ func New(l *lexer.Lexer) *Parser {
 	// Register infix-/prefix-functions
 	p.registerPrefixFn(token.IDENT, p.parseIdentifier)
 	p.registerPrefixFn(token.INT, p.parseIntegerLiteral)
-
+	p.registerPrefixFn(token.TRUE, p.parseBoolean)
+	p.registerPrefixFn(token.FALSE, p.parseBoolean)
 	p.registerPrefixFn(token.BANG, p.parsePrefixExpression)
 	p.registerPrefixFn(token.MINUS, p.parsePrefixExpression)
 
@@ -111,6 +114,9 @@ func (p *Parser) parseStatement() ast.Statement {
 
 func (p *Parser) parseLetStatement() *ast.LetStatement {
 	// let <identifier> = <expression>
+	if showTrace {
+		defer untrace(trace("parseLetStatement"))
+	}
 	stmt := &ast.LetStatement{Token: p.currToken}
 	if !p.expectPeek(token.IDENT) {
 		return nil
@@ -130,6 +136,9 @@ func (p *Parser) parseLetStatement() *ast.LetStatement {
 
 func (p *Parser) parseReturnStatement() *ast.ReturnStatement {
 	// return <expression>
+	if showTrace {
+		defer untrace(trace("parseIdentifier"))
+	}
 	stmt := &ast.ReturnStatement{Token: p.currToken}
 	p.nextToken()
 
@@ -142,6 +151,10 @@ func (p *Parser) parseReturnStatement() *ast.ReturnStatement {
 
 func (p *Parser) parseExpressionStatement() *ast.ExpressionStatement {
 	// <prefix operation><expession> | <expression> <infix operator> <expression> | ...
+	if showTrace {
+		defer untrace(trace("parseExpressionStatement"))
+	}
+
 	stmt := &ast.ExpressionStatement{Token: p.currToken}
 	stmt.Expression = p.parseExpression(LOWEST)
 
@@ -152,6 +165,10 @@ func (p *Parser) parseExpressionStatement() *ast.ExpressionStatement {
 }
 
 func (p *Parser) parseExpression(precendence int) ast.Expression {
+	if showTrace {
+		defer untrace(trace("parseExpression"))
+	}
+
 	prefixFn := p.prefixParseFns[p.currToken.Type]
 	if prefixFn == nil {
 		p.noPrefixParseFnError(p.currToken.Type)
@@ -173,10 +190,18 @@ func (p *Parser) parseExpression(precendence int) ast.Expression {
 }
 
 func (p *Parser) parseIdentifier() ast.Expression {
+	if showTrace {
+		defer untrace(trace("parseIdentifier"))
+	}
+
 	return &ast.Identifier{Token: p.currToken, Value: p.currToken.Literal}
 }
 
 func (p *Parser) parseIntegerLiteral() ast.Expression {
+	if showTrace {
+		defer untrace(trace("parseIntegerLiteral"))
+	}
+
 	lit := &ast.IntegerLiteral{Token: p.currToken}
 
 	value, err := strconv.ParseInt(p.currToken.Literal, 0, 64)
@@ -190,7 +215,18 @@ func (p *Parser) parseIntegerLiteral() ast.Expression {
 	return lit
 }
 
+func (p *Parser) parseBoolean() ast.Expression {
+	if showTrace {
+		defer untrace(trace("parseBoolean"))
+	}
+	return &ast.Boolean{Token: p.currToken, Value: p.currTokenIs(token.TRUE)}
+}
+
 func (p *Parser) parsePrefixExpression() ast.Expression {
+	if showTrace {
+		defer untrace(trace("parsePrefixExpression"))
+	}
+
 	expression := &ast.PrefixExpression{
 		Token:    p.currToken,
 		Operator: p.currToken.Literal,
@@ -203,6 +239,10 @@ func (p *Parser) parsePrefixExpression() ast.Expression {
 }
 
 func (p *Parser) parseInfixExpression(left ast.Expression) ast.Expression {
+	if showTrace {
+		defer untrace(trace("parseInfixExpression"))
+	}
+
 	expression := &ast.InfixExpression{
 		Token:    p.currToken,
 		Operator: p.currToken.Literal,
