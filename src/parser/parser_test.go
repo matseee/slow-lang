@@ -30,11 +30,10 @@ func TestLetStatements(t *testing.T) {
 			return
 		}
 
-		// TODO: Not implemented yet
-		// val := stmt.(*ast.LetStatement).Value
-		// if !testLiteralExpression(t, val, tt.expectedValue) {
-		// 	return
-		// }
+		val := stmt.(*ast.LetStatement).Value
+		if !testLiteralExpression(t, val, tt.expectedValue) {
+			return
+		}
 	}
 }
 
@@ -66,10 +65,9 @@ func TestReturnStatements(t *testing.T) {
 			t.Errorf("returnStmt.TokenLiteral not 'return'. got=%q", returnStmt.TokenLiteral())
 		}
 
-		// TODO: Not implemented yet
-		// if testLiteralExpression(t, returnStmt.ReturnValue, tt.expectedValue) {
-		// 	return
-		// }
+		if testLiteralExpression(t, returnStmt.ReturnValue, tt.expectedValue) {
+			return
+		}
 	}
 }
 
