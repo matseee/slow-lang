@@ -14,8 +14,8 @@ func TestLetStatements(t *testing.T) {
 		expectedValue      interface{}
 	}{
 		{"let x = 2;", "x", 2},
-		{"let y = 0;", "y", 0},
-		{"let foobar = 1342037;", "foobar", 1342037},
+		{"let y = true;", "y", true},
+		{"let foobar = y;", "foobar", "y"},
 	}
 
 	for _, tt := range tests {
