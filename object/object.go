@@ -2,52 +2,44 @@ package object
 
 import "fmt"
 
-// implementation of our object system
-// this object system is used to save values for our tree walking interpreter
-
 type ObjectType string
-
-const (
-	BOOLEAN_OBJ = "BOOLEAN"
-	INTEGER_OBJ = "INTEGER"
-	NULL_OBJ    = "NULL"
-)
 
 type Object interface {
 	Type() ObjectType
 	Inspect() string
 }
 
+// known object types
+
+const (
+	BOOLEAN_OBJ      = "BOOLEAN"
+	INTEGER_OBJ      = "INTEGER"
+	NULL_OBJ         = "NULL"
+	RETURN_VALUE_OBJ = "RETURN_VALUE"
+)
+
 type Boolean struct {
 	Value bool
 }
 
-func (b *Boolean) Type() ObjectType {
-	return BOOLEAN_OBJ
-}
-
-func (b *Boolean) Inspect() string {
-	return fmt.Sprintf("%t", b.Value)
-}
+func (b *Boolean) Type() ObjectType { return BOOLEAN_OBJ }
+func (b *Boolean) Inspect() string  { return fmt.Sprintf("%t", b.Value) }
 
 type Integer struct {
 	Value int64
 }
 
-func (i *Integer) Type() ObjectType {
-	return INTEGER_OBJ
-}
-
-func (i *Integer) Inspect() string {
-	return fmt.Sprintf("%d", i.Value)
-}
+func (i *Integer) Type() ObjectType { return INTEGER_OBJ }
+func (i *Integer) Inspect() string  { return fmt.Sprintf("%d", i.Value) }
 
 type Null struct{}
 
-func (n *Null) Type() ObjectType {
-	return NULL_OBJ
+func (n *Null) Type() ObjectType { return NULL_OBJ }
+func (n *Null) Inspect() string  { return "null" }
+
+type ReturnValue struct {
+	Value Object
 }
 
-func (n *Null) Inspect() string {
-	return "null"
-}
+func (rv *ReturnValue) Type() ObjectType { return RETURN_VALUE_OBJ }
+func (rv *ReturnValue) Inspect() string { return rv.Value.Inspect() }
