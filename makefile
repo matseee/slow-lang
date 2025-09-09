@@ -1,8 +1,6 @@
 APP_NAME := slow-lang
 PKG := ./...
 
-.PHONY: all build run test clean fmt
-
 all: build
 
 build:
