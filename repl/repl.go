@@ -1,4 +1,5 @@
-package repl // read-eval-print loop
+// Package repl implements the read-eval-print loop (REPL) for the slow-lang interpreter.
+package repl
 
 import (
 	"bufio"

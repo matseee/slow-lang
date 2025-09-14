@@ -1,3 +1,5 @@
+// Package object defines all object types and environments
+// used by the slow-lang interpreter.
 package object
 
 import (

@@ -1,3 +1,5 @@
+// Package parser implements the parser for the slow-lang interpreter,
+// which constructs an abstract syntax tree (AST) from a sequence of tokens.
 package parser
 
 import (
@@ -41,6 +43,7 @@ type (
 	infixParseFn  func(ast.Expression) ast.Expression
 )
 
+// Parser is used to create an abstract syntax tree out of tokens created by the lexer.Lexer.
 type Parser struct {
 	l      *lexer.Lexer
 	errors []string
@@ -114,8 +117,8 @@ func (p *Parser) Errors() []string {
 
 func (p *Parser) parseStatement() ast.Statement {
 	switch p.currToken.Type {
-	case token.LET:
-		return p.parseLetStatement()
+	case token.SET:
+		return p.parseSetStatement()
 	case token.RETURN:
 		return p.parseReturnStatement()
 	default:
@@ -123,12 +126,12 @@ func (p *Parser) parseStatement() ast.Statement {
 	}
 }
 
-func (p *Parser) parseLetStatement() *ast.LetStatement {
-	// let <identifier> = <expression>
+func (p *Parser) parseSetStatement() *ast.SetStatement {
+	// set <identifier> = <expression>
 	if showTrace {
-		defer untrace(trace("parseLetStatement"))
+		defer untrace(trace("parseSetStatement"))
 	}
-	stmt := &ast.LetStatement{Token: p.currToken}
+	stmt := &ast.SetStatement{Token: p.currToken}
 	if !p.expectPeek(token.IDENT) {
 		return nil
 	}

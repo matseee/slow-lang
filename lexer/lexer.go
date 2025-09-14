@@ -1,9 +1,12 @@
+// Package lexer implements the lexical analysis for the slow-lang interpreter,
+// converting source code into a stream of tokens.
 package lexer
 
 import (
 	"slow-lang/token"
 )
 
+// Lexer is used to transform source code into token.Token's.
 type Lexer struct {
 	input        string
 	position     int  // position(index) of current char

@@ -165,15 +165,15 @@ func TestReturnStatements(t *testing.T) {
 	}
 }
 
-func TestLetStatements(t *testing.T) {
+func TestSetStatements(t *testing.T) {
 	tests := []struct {
 		input    string
 		expected int64
 	}{
-		{"let a = 5; a;", 5},
-		{"let a = 5 * 5; a;", 25},
-		{"let a = 5; let b = a; b;", 5},
-		{"let a = 5; let b = a; let c = a + b + 5; c;", 15},
+		{"set a = 5; a;", 5},
+		{"set a = 5 * 5; a;", 25},
+		{"set a = 5; set b = a; b;", 5},
+		{"set a = 5; set b = a; set c = a + b + 5; c;", 15},
 	}
 
 	for _, tt := range tests {
@@ -276,11 +276,11 @@ func TestFunctionApplication(t *testing.T) {
 		input    string
 		expected int64
 	}{
-		{"let identity = fn(x) { x; }; identity(5);", 5},
-		{"let identity = fn(x) { return x; }; identity(5);", 5},
-		{"let double = fn(x) { x * 2; }; double(5);", 10},
-		{"let add = fn(x, y) { x + y; }; add(5, 5);", 10},
-		{"let add = fn(x, y) { x + y; }; add(5 + 5, add(5, 5));", 20},
+		{"set identity = fn(x) { x; }; identity(5);", 5},
+		{"set identity = fn(x) { return x; }; identity(5);", 5},
+		{"set double = fn(x) { x * 2; }; double(5);", 10},
+		{"set add = fn(x, y) { x + y; }; add(5, 5);", 10},
+		{"set add = fn(x, y) { x + y; }; add(5 + 5, add(5, 5));", 20},
 		{"fn(x) { x; }(5)", 5},
 	}
 
@@ -291,11 +291,11 @@ func TestFunctionApplication(t *testing.T) {
 
 func TestClosures(t *testing.T) {
 	input := `
-	let newAddr = fn(x) {
+	set newAddr = fn(x) {
 		fn(y) { x + y }
 	};
 
-	let addTwo = newAddr(2);
+	set addTwo = newAddr(2);
 	addTwo(2);
 	`
 
@@ -328,11 +328,11 @@ func TestArrayIndexExpressions(t *testing.T) {
 		{"[1, 2, 3][0]", 1},
 		{"[1, 2, 3][1]", 2},
 		{"[1, 2, 3][2]", 3},
-		{"let i = 0; [1][i];", 1},
+		{"set i = 0; [1][i];", 1},
 		{"[1, 2, 3][1 + 1];", 3},
-		{"let myArray = [1, 2, 3]; myArray[2];", 3},
-		{"let myArray = [1, 2, 3]; myArray[0] + myArray[1] + myArray[2];", 6},
-		{"let myArray = [1, 2, 3]; let i = myArray[0]; myArray[i]", 2},
+		{"set myArray = [1, 2, 3]; myArray[2];", 3},
+		{"set myArray = [1, 2, 3]; myArray[0] + myArray[1] + myArray[2];", 6},
+		{"set myArray = [1, 2, 3]; set i = myArray[0]; myArray[i]", 2},
 		{"[1, 2, 3][3]", nil},
 		{"[1, 2, 3][-1]", nil},
 	}
@@ -359,11 +359,11 @@ func TestBuiltinFunctions(t *testing.T) {
 		{`len(1)`, "argument to `len` not supported, got INTEGER"},
 		{`len("one", "two")`, "wrong number of arguments. got=2, want=1"},
 		{`len([1,2,3])`, 3},
-		{`let x = [1,2,3]; len(x)`, 3},
-		{`let x = [1,2,3]; first(x)`, 1},
-		{`let x = [1,2,3]; last(x)`, 3},
-		{`let x = [1,2,3]; tail(x)[0]`, 2},
-		{`let x = [1]; append(x, 2)[1]`, 2},
+		{`set x = [1,2,3]; len(x)`, 3},
+		{`set x = [1,2,3]; first(x)`, 1},
+		{`set x = [1,2,3]; last(x)`, 3},
+		{`set x = [1,2,3]; tail(x)[0]`, 2},
+		{`set x = [1]; append(x, 2)[1]`, 2},
 	}
 
 	for _, tt := range tests {

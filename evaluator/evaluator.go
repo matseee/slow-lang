@@ -1,3 +1,5 @@
+// Package evaluator implements the evaluation logic of the slow-lang interpreter.
+// It executes the abstract syntax tree (AST) within a given environment.
 package evaluator
 
 import (
@@ -46,7 +48,7 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		}
 		return &object.ReturnValue{Value: val}
 
-	case *ast.LetStatement:
+	case *ast.SetStatement:
 		val := Eval(node.Value, env)
 		if isError(val) {
 			return val
@@ -362,6 +364,6 @@ func isTruthy(obj object.Object) bool {
 	}
 }
 
-func newError(format string, a ...interface{}) *object.Error {
+func newError(format string, a ...any) *object.Error {
 	return &object.Error{Message: fmt.Sprintf(format, a...)}
 }

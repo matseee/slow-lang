@@ -1,4 +1,5 @@
-package ast // abstract syntax tree
+// Package ast defines the abstract syntax tree (AST) structures used by the slow-lang programming language.
+package ast
 
 import (
 	"bytes"
@@ -21,7 +22,7 @@ type Expression interface {
 	expressionNode()
 }
 
-// root node => []statements
+// Program => []statements
 type Program struct {
 	Statements []Statement
 }
@@ -61,16 +62,16 @@ func (bs *BlockStatement) String() string {
 	return out.String()
 }
 
-// LetStatement => let <identifier> = <expression>
-type LetStatement struct {
-	Token token.Token // the token.LET token
+// SetStatement => set <identifier> = <expression>
+type SetStatement struct {
+	Token token.Token // the token.SET token
 	Name  *Identifier
 	Value Expression
 }
 
-func (ls *LetStatement) statementNode()       {}
-func (ls *LetStatement) TokenLiteral() string { return ls.Token.Literal }
-func (ls *LetStatement) String() string {
+func (ls *SetStatement) statementNode()       {}
+func (ls *SetStatement) TokenLiteral() string { return ls.Token.Literal }
+func (ls *SetStatement) String() string {
 	var out bytes.Buffer
 
 	out.WriteString(ls.TokenLiteral() + " ")
@@ -104,7 +105,7 @@ func (rs *ReturnStatement) String() string {
 	return out.String()
 }
 
-// Expression statement implementation
+// ExpressionStatement implementation
 type ExpressionStatement struct {
 	Token      token.Token // the first token of the expression
 	Expression Expression
@@ -119,7 +120,7 @@ func (es *ExpressionStatement) String() string {
 	return ""
 }
 
-// Index expression implementation
+// IndexExpression => array[<IndexExpression>]
 type IndexExpression struct {
 	Token token.Token // The [ token
 	Left  Expression
@@ -160,7 +161,7 @@ func (il *IntegerLiteral) expressionNode()      {}
 func (il *IntegerLiteral) TokenLiteral() string { return il.Token.Literal }
 func (il *IntegerLiteral) String() string       { return il.Token.Literal }
 
-// BooleanLiteral => <true|false>
+// Boolean => <true|false>
 type Boolean struct {
 	Token token.Token
 	Value bool
@@ -170,7 +171,7 @@ func (b *Boolean) expressionNode()      {}
 func (b *Boolean) TokenLiteral() string { return b.Token.Literal }
 func (b *Boolean) String() string       { return b.Token.Literal }
 
-// StringLiteral => "<any string>"
+// StringLiteral => "<Value>"
 type StringLiteral struct {
 	Token token.Token
 	Value string
@@ -180,7 +181,7 @@ func (sl *StringLiteral) expressionNode()      {}
 func (sl *StringLiteral) TokenLiteral() string { return sl.Token.Literal }
 func (sl *StringLiteral) String() string       { return sl.Token.Literal }
 
-// ArraryLiteral => [<any expression>, <any expression>]
+// ArraryLiteral => [<[]Elements>]
 type ArraryLiteral struct {
 	Token    token.Token // the '[' token
 	Elements []Expression
@@ -203,7 +204,7 @@ func (al *ArraryLiteral) String() string {
 	return out.String()
 }
 
-// PrefixExpression => <prefix operator><expression>
+// PrefixExpression => <Operator><Right>
 type PrefixExpression struct {
 	Token    token.Token // e.g. token.BANG or token.MINUS
 	Operator string
@@ -219,7 +220,7 @@ func (pe *PrefixExpression) String() string {
 	return out.String()
 }
 
-// InfixExpression => <expression> <infix operator> <expression>
+// InfixExpression => <Left> <Operator> <Right>
 type InfixExpression struct {
 	Token    token.Token // e.g. token.PLUS or token.EQ
 	Left     Expression
@@ -237,7 +238,7 @@ func (ie *InfixExpression) String() string {
 	return out.String()
 }
 
-// IfExpression => if (<expression>) <block statement> else <block statement>
+// IfExpression => if (<Condition>) <Consequence> else <Alternative>
 type IfExpression struct {
 	Token       token.Token // 'if' token
 	Condition   Expression
@@ -263,7 +264,7 @@ func (ie *IfExpression) String() string {
 	return out.String()
 }
 
-// FunctionLiteral => fn (<expression>) <block statement>
+// FunctionLiteral => fn (<Parameters>) <Body>
 type FunctionLiteral struct {
 	Token      token.Token // the 'fn' token
 	Parameters []*Identifier
@@ -289,6 +290,7 @@ func (fl *FunctionLiteral) String() string {
 	return out.String()
 }
 
+// CallExpression => <Function>(<Arguments>)
 type CallExpression struct {
 	Token     token.Token // The `(` token
 	Function  Expression  // Identifier or FunctionLiteral

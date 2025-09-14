@@ -1,3 +1,4 @@
+// Package token defines all possible tokens used by the slow-lang interpreter.
 package token
 
 type TokenType string
@@ -42,7 +43,7 @@ const (
 
 	// keywords
 	FUNCTION = "FUNCTION"
-	LET      = "LET"
+	SET      = "SET"
 	TRUE     = "TRUE"
 	FALSE    = "FALSE"
 	IF       = "IF"
@@ -52,7 +53,7 @@ const (
 
 var keywords = map[string]TokenType{
 	"fn":     FUNCTION,
-	"let":    LET,
+	"set":    SET,
 	"true":   TRUE,
 	"false":  FALSE,
 	"if":     IF,
