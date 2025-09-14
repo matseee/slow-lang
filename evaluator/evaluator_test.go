@@ -323,7 +323,7 @@ func TestArrayLiterals(t *testing.T) {
 func TestArrayIndexExpressions(t *testing.T) {
 	tests := []struct {
 		input    string
-		expected interface{}
+		expected any
 	}{
 		{"[1, 2, 3][0]", 1},
 		{"[1, 2, 3][1]", 2},
@@ -351,13 +351,19 @@ func TestArrayIndexExpressions(t *testing.T) {
 func TestBuiltinFunctions(t *testing.T) {
 	tests := []struct {
 		input    string
-		expected interface{}
+		expected any
 	}{
 		{`len("")`, 0},
 		{`len("four")`, 4},
 		{`len("hello world")`, 11},
 		{`len(1)`, "argument to `len` not supported, got INTEGER"},
 		{`len("one", "two")`, "wrong number of arguments. got=2, want=1"},
+		{`len([1,2,3])`, 3},
+		{`let x = [1,2,3]; len(x)`, 3},
+		{`let x = [1,2,3]; first(x)`, 1},
+		{`let x = [1,2,3]; last(x)`, 3},
+		{`let x = [1,2,3]; tail(x)[0]`, 2},
+		{`let x = [1]; append(x, 2)[1]`, 2},
 	}
 
 	for _, tt := range tests {
