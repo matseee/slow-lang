@@ -47,7 +47,7 @@ foo < bar;
 foo > bar;
 ```
 
-#### if-else-expressions
+#### if-else
 ```
 if (x > y) { 
     // ...
