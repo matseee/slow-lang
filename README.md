@@ -77,7 +77,7 @@ set greeter = fn(x) {
     }
 };
 
-set helloGreeter = greeter("Hello")
+set helloGreeter = greeter("Hello");
 helloGreeter("World");  // => "Hello World"
 ```
 
