@@ -5,6 +5,7 @@ import (
 	"bufio"
 	"fmt"
 	"io"
+	"os"
 	"slow-lang/evaluator"
 	"slow-lang/lexer"
 	"slow-lang/object"
@@ -57,6 +58,32 @@ func Start(in io.Reader, out io.Writer) {
 			io.WriteString(out, evaluated.Inspect())
 			io.WriteString(out, "\n")
 		}
+	}
+}
+
+func StartFile(filePath string, out io.Writer) {
+	contents, err := os.ReadFile(filePath)
+	if err != nil {
+		io.WriteString(out, SNAIL)
+		io.WriteString(out, "\nCould not read file!!")
+		return
+	}
+
+	env := object.NewEnvironment()
+
+	l := lexer.New(string(contents))
+	p := parser.New(l)
+
+	program := p.ParseProgram()
+	if len(p.Errors()) != 0 {
+		printParserErrors(out, p.Errors())
+		return
+	}
+
+	evaluated := evaluator.Eval(program, env)
+	if evaluated != nil && evaluated.Type() != object.NULL_OBJ {
+		io.WriteString(out, evaluated.Inspect())
+		io.WriteString(out, "\n")
 	}
 }
 

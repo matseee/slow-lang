@@ -106,9 +106,11 @@ func appendBuiltin(args ...object.Object) object.Object {
 func printBuiltin(args ...object.Object) object.Object {
 	for _, arg := range args {
 		if arg.Type() != object.NULL_OBJ {
-			fmt.Println(arg.Inspect())
+			fmt.Print(arg.Inspect())
 		}
 	}
+
+	fmt.Print("\n")
 
 	return NULL
 }

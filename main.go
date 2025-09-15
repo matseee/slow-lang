@@ -1,19 +1,19 @@
 package main
 
 import (
-	"fmt"
+	"flag"
 	"os"
-	"os/user"
 	"slow-lang/repl"
 )
 
 func main() {
-	user, err := user.Current()
-	if err != nil {
-		panic(err)
+	filePtr := flag.String("src", "", "path to .sl file")
+	flag.Parse()
+
+	if *filePtr != "" {
+		repl.StartFile(*filePtr, os.Stdout)
+		return
 	}
-	fmt.Printf("Hello %s! This is the slow programming language!\n", user.Username)
-	fmt.Printf("Feel free to type in commands\n")
 
 	repl.Start(os.Stdin, os.Stdout)
 }
