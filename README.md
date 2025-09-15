@@ -17,16 +17,16 @@ You can find it [here](https://interpreterbook.com/).
 - `make build` (if not already done)
 - `./slow-lang -src=./example.sl`
 
-### slow-lang syntax
+## slow-lang syntax
 
-#### types and variables
+### types and variables
 ```
 set a = true        // Booleans
 set x = 12          // Integers
 set y = "slow-lang" // Strings
 ```
 
-#### operators
+### operators
 ```
 // prefix operators
 -5;
@@ -47,7 +47,7 @@ foo < bar;
 foo > bar;
 ```
 
-#### if-else
+### if-else
 ```
 if (x > y) { 
     // ...
@@ -56,7 +56,7 @@ if (x > y) {
 }
 ```
 
-#### functions
+### functions
 ```
 set min = fn(x,y) {
     if (x < y) {
@@ -81,7 +81,7 @@ set helloGreeter = greeter("Hello");
 helloGreeter("World");  // => "Hello World"
 ```
 
-#### arrays
+### arrays
 ```
 set arr = [1, 2, 3];
 arr[0];                 // => 1
