@@ -1,6 +1,9 @@
 package evaluator
 
-import "slow-lang/object"
+import (
+	"fmt"
+	"slow-lang/object"
+)
 
 var builtins = map[string]*object.Builtin{
 	"len":    {Fn: lenBuiltin},
@@ -8,6 +11,7 @@ var builtins = map[string]*object.Builtin{
 	"last":   {Fn: lastBuiltin},
 	"tail":   {Fn: tailBuiltin},
 	"append": {Fn: appendBuiltin},
+	"print":  {Fn: printBuiltin},
 }
 
 func lenBuiltin(args ...object.Object) object.Object {
@@ -97,4 +101,14 @@ func appendBuiltin(args ...object.Object) object.Object {
 	newElements[length] = args[1]
 
 	return &object.Array{Elements: newElements}
+}
+
+func printBuiltin(args ...object.Object) object.Object {
+	for _, arg := range args {
+		if arg.Type() != object.NULL_OBJ {
+			fmt.Println(arg.Inspect())
+		}
+	}
+
+	return NULL
 }

@@ -27,11 +27,13 @@ const SNAIL = `
  .|                                ~-_
 /_____________________________________~~____`
 
-const PROMPT = "\n>> "
+const PROMPT = ">> "
 
 func Start(in io.Reader, out io.Writer) {
 	scanner := bufio.NewScanner(in)
 	env := object.NewEnvironment()
+
+	fmt.Fprint(out, "\n")
 
 	for {
 		fmt.Fprint(out, PROMPT)
@@ -51,7 +53,7 @@ func Start(in io.Reader, out io.Writer) {
 		}
 
 		evaluated := evaluator.Eval(program, env)
-		if evaluated != nil {
+		if evaluated != nil && evaluated.Type() != object.NULL_OBJ {
 			io.WriteString(out, evaluated.Inspect())
 			io.WriteString(out, "\n")
 		}
