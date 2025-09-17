@@ -26,3 +26,11 @@ print("a / b = ", a / b);
 
 set str = "slow";
 print("str + '-lang' = ", str + "-lang");
+
+set users = [
+    { "user": "max", "pass": "super-secret" },
+    { "user": "alex", "pass": "passw0rd1" }
+];
+
+print("users[0]['user'] = " + users[0]["user"]);
+print("users[1]['pass'] = " + users[1]["pass"]);

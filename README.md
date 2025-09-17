@@ -47,7 +47,7 @@ foo < bar;
 foo > bar;
 ```
 
-### if-else
+### conditionals
 ```
 if (x > y) { 
     // ...
@@ -94,4 +94,12 @@ tail(arr);              // => [2, 3]
 append(arr, 4);         // => [1, 2, 3, 4]
 
 set anotherArr = [-13, "aString", fn(x) { x }];
+```
+
+### hashes
+```
+set user = {"name": "Max", "age": 50, "available": true};
+user["name"]        // => "Max"
+user["age"]         // => 50
+user["available"]   // => true
 ```
